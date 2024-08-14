@@ -19,15 +19,14 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: 'white',
-  border: '2px solid #000',
+  bgcolor: 'background.paper',
+  borderRadius: '8px',
   boxShadow: 24,
   p: 4,
   display: 'flex',
   flexDirection: 'column',
   gap: 3,
 }
-
 
 export default function Home() {
   const [pantry, setPantry] = useState([])
@@ -91,8 +90,8 @@ export default function Home() {
       justifyContent="center"
       alignItems="center"
       flexDirection={'column'}
-      gap={2}
-      > 
+      gap={4}
+    > 
       <Modal
         open={open}
         onClose={handleClose}
@@ -113,7 +112,8 @@ export default function Home() {
             onChange={(e) => setItemName(e.target.value)}
           />
           <Button
-            variant="outlined"
+            variant="contained"
+            color="primary"
             onClick={() => {
               addItem(itemName)
               setItemName('')
@@ -126,73 +126,88 @@ export default function Home() {
         </Box>
       </Modal>
     
-      <Button variant="contained" onClick={handleOpen}>
-      Add New Item
+      <Button variant="contained" color="primary" onClick={handleOpen}>
+        Add New Item
       </Button>
 
-      <Box border={'1px solid #333'}>
+      <Box border={'1px solid #333'} borderRadius="8px" overflow="hidden">
 
-      {/* header */}
-      <Box width={'800px'} height={'100px'} bgcolor={'#FF9BC0'} display={'flex'} justifyContent={"center"} alignItems={'center'}>
-        <Typography 
-          variant="h2"
-          color={'#333'}
-          textAlign={'center'}
-          textTransform={'capitalize'} 
-        >
-        Grocery List
-        </Typography>
-      </Box>
-
-      <Stack width="800px" height="300px" spacing={2} overflow={"scroll"}>
-      {pantry.map((item, index) => (
-        <Box
-          key={`${item.name}-${index}`}
-          width="100%"
-          minHeight="150px"
-          display={'flex'}
-          justifyContent={'space-between'}
+        {/* header */}
+        <Box 
+          width={'800px'} 
+          height={'100px'} 
+          bgcolor={'#1976d2'} 
+          display={'flex'} 
+          justifyContent={"center"} 
           alignItems={'center'}
-          bgcolor={'#f0f0f0'}
-          paddingX={5}
         >
           <Typography 
             variant="h3"
-            color={'#000'}
+            color={'#fff'}
             textAlign={'center'}
-            textTransform={'capitalize'}
+            textTransform={'capitalize'} 
           >
-            {item.name}
+            Grocery List
           </Typography>
-          <Typography 
-            variant="h5"
-            color={'#000'}
-            textAlign={'center'}
-          >
-            Quantity: {item.quantity}
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={() => {
-              removeItem(item.name);
-            console.log("removing...");
-            }}>
-            -
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => {
-              addItem(item.name);
-            console.log("removing...");
-            }}>
-            +
-          </Button>
-
         </Box>
-      ))}
 
-
-      </Stack>
+        <Stack width="800px" spacing={2} maxHeight="300px" overflow={"auto"} padding={2}>
+          {pantry.map((item, index) => (
+            <Box
+              key={`${item.name}-${index}`}
+              width="100%"
+              minHeight="70px"
+              display={'flex'}
+              justifyContent={'space-between'}
+              alignItems={'center'}
+              bgcolor={'#e3f2fd'}
+              borderRadius="4px"
+              paddingX={3}
+              paddingY={2}
+            >
+              <Typography 
+                variant="h6"
+                color={'#1976d2'}
+                textAlign={'center'}
+                textTransform={'capitalize'}
+                flexGrow={1}
+              >
+                {item.name}
+              </Typography>
+              <Box display="flex" alignItems="center" gap={1}>
+                <Typography 
+                  variant="h6"
+                  color={'#1976d2'}
+                  textAlign={'right'}
+                >
+                  Quantity: {item.quantity}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    removeItem(item.name);
+                    console.log("removing...");
+                  }}
+                  sx={{ minWidth: '40px', padding: '6px 12px' }}
+                >
+                  -
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    addItem(item.name);
+                    console.log("adding...");
+                  }}
+                  sx={{ minWidth: '40px', padding: '6px 12px' }}
+                >
+                  +
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </Stack>
       </Box>
     </Box>
   );
