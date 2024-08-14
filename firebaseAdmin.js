@@ -7,6 +7,6 @@ initializeApp({
   credential: cert(serviceAccount)
 });
 
-const db = getFirestore();
+const firestore = getFirestore();
 
-module.exports = db; // Export db to use in other parts of your server application
+module.exports = firestore; // Export db to use in other parts of your server application
