@@ -178,7 +178,7 @@ export default function Home() {
             textAlign={'center'}
             textTransform={'capitalize'} 
           >
-            Grocery List
+            Pantry Tracker
           </Typography>
         </Box>
 
@@ -228,7 +228,7 @@ export default function Home() {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    addItem(item.name);
+                    addItem(item.name, item.type);
                     console.log("adding...");
                   }}
                   sx={{ minWidth: '40px', padding: '6px 12px' }}
