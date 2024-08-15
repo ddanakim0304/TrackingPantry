@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Box, Stack, Typography, Button, Modal, TextField } from '@mui/material'
+import { Box, Stack, Typography, Button, Modal, TextField, MenuItem } from '@mui/material'
 import { firestore } from '@/firebase'
 import {
   collection,
@@ -30,22 +30,25 @@ const style = {
 
 export default function Home() {
   const [pantry, setPantry] = useState([])
-
+  const [type, setType] = useState('food');
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const [itemName, setItemName] = useState('')
 
-  const updatePantry = async () => {
+  const updatePantry = async (filterType = null) => {
     const snapshot = query(collection(firestore, 'pantry'))
     const docs = await getDocs(snapshot)
     const pantryList = []
     docs.forEach((doc) => {
-      pantryList.push({ name: doc.id, ...doc.data() })
-    })
+      const data = { name: doc.id, ...doc.data() };
+    if (!filterType || data.type === filterType) {
+      pantryList.push(data);
+    }
+    });
     setPantry(pantryList)
-  }
+  };
 
   useEffect(() => {
     updatePantry()
@@ -54,14 +57,14 @@ export default function Home() {
 
   // add item function
 
-  const addItem = async (item) => {
+  const addItem = async (item, type) => {
     const docRef = doc(collection(firestore, 'pantry'), item)
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
       const { quantity } = docSnap.data()
-      await setDoc(docRef, { quantity: quantity + 1 })
+      await setDoc(docRef, { quantity: quantity + 1, type: type })
     } else {
-      await setDoc(docRef, { quantity: 1 })
+      await setDoc(docRef, { quantity: 1, type: type })
     }
     await updatePantry()
   }
@@ -92,6 +95,22 @@ export default function Home() {
       flexDirection={'column'}
       gap={4}
     > 
+
+    <Box>
+      <Button variant="contained" color="primary" onClick={() => updatePantry('food')}>
+        Show Food
+      </Button>
+
+      <Button variant="contained" color="primary" onClick={() => updatePantry('drink')}>
+        Show Drinks
+      </Button>
+
+      <Button variant="contained" color="primary" onClick={() => updatePantry()}>
+        Show All
+      </Button>
+    </Box>
+
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -111,11 +130,23 @@ export default function Home() {
             value={itemName}
             onChange={(e) => setItemName(e.target.value)}
           />
+          <TextField
+          id="outline-select-currency"
+          select
+          label="Type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          helperText="Please select the item type"
+          fullWidth
+          >
+            <MenuItem value="food">Food</MenuItem>
+            <MenuItem value="drink">Drink</MenuItem>
+          </TextField>
           <Button
             variant="contained"
             color="primary"
             onClick={() => {
-              addItem(itemName)
+              addItem(itemName, type)
               setItemName('')
               handleClose()
             }}
